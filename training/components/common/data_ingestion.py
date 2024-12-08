@@ -23,6 +23,7 @@ class DataIngestion:
             
 
     def save_data(self):
+        info_logger.info(f"Data Ingestion components started")
         try:
 
             status = False
@@ -35,7 +36,7 @@ class DataIngestion:
                 with open(self.config.STATUS_FILE, "w") as f:
                     f.write(f"Data Ingestion status: {status}")
 
-                info_logger.info(f"Data Ingestion completed successfully")
+            info_logger.info(f"Data Ingestion completed successfully")
         except Exception as e:
             with open(self.config.STATUS_FILE, "w") as f:
                 f.write(f"Data Ingestion status: {status}")
