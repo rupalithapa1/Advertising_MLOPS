@@ -18,13 +18,6 @@ class DataValidationConfig:
 
 #5
 @dataclass(frozen=True)
-class FeatureEngineeringConfig:
-    root_dir: Path
-    train_data_path: Path
-    test_data_path: Path
-    STATUS_FILE: str
-
-@dataclass(frozen=True)
 class CrossValConfig:
     root_dir: Path
     data_dir: Path
@@ -32,6 +25,15 @@ class CrossValConfig:
     final_test_data_path: Path
     STATUS_FILE: str
     best_model_params: Path
+
+
+@dataclass(frozen=True)
+class FeatureEngineeringConfig:
+    root_dir: Path
+    final_train_data_path: Path
+    final_test_data_path: Path
+    STATUS_FILE: str
+
 
 #6
 # Changes will be made as per the model is configured
