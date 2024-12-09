@@ -83,6 +83,9 @@ class FeatureEngineering:
             
             info_logger.info("final training transformed data saved successfully")
 
+            with open(self.config.STATUS_FILE, "w") as f:
+             f.write(f"Feature Engineering status: True")
+
         except Exception as e:
             handle_exception(e,FeatureEngineeringError)   
 
