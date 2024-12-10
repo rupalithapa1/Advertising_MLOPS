@@ -16,7 +16,7 @@ class PredictionPipeline:
 
     def predict(self,input):
         try:
-            feature_engineering = FeatureEngineering
+            feature_engineering = FeatureEngineering()
             transformed_data = feature_engineering.transform_data(input)
 
             prediction = Prediction()
