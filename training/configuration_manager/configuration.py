@@ -3,10 +3,9 @@ from training.utils.common import read_yaml, create_directories
 from training.entity.config_entity import DataIngestionConfig
 from training.entity.config_entity import DataValidationConfig
 from training.entity.config_entity import FeatureEngineeringConfig
-from training.entity.config_entity import CrossValConfig
 from training.entity.config_entity import ModelTrainerConfig
 from training.entity.config_entity import ModelEvaluationConfig
-
+from training.entity.config_entity import CrossValConfig
 
 class ConfigurationManager:
     def __init__(
@@ -37,7 +36,7 @@ class ConfigurationManager:
 #2    
     def get_data_validation_config(self) -> DataValidationConfig:
         config= self.config.data_validation
-        schema=self.schema.COLUMNS
+        schema = self.schema.COLUMNS 
 
         create_directories([config.root_dir])
 
@@ -49,8 +48,7 @@ class ConfigurationManager:
         )
 
         return data_validation_config
- #3   
-   
+ 
 #5    
     def get_feature_engineering_config(self) -> FeatureEngineeringConfig:
         config = self.config.feature_engineering
@@ -64,6 +62,28 @@ class ConfigurationManager:
         )
 
         return feature_engineering_config
+    
+#8
+    def get_cross_val_config(self) -> CrossValConfig:
+        config = self.config.cross_val
+        create_directories([config.root_dir])
+        create_directories([config.final_train_data_path, config.final_test_data_path])
+        create_directories([ config.best_model_params])
+
+        cross_val_config = CrossValConfig(
+            root_dir = config.root_dir,
+            data_dir= config.data_dir,
+            final_train_data_path = config.final_train_data_path,
+            final_test_data_path= config.final_test_data_path,
+            best_model_params= config.best_model_params,
+            STATUS_FILE= config.STATUS_FILE
+        )
+
+        return cross_val_config
+    
+
+
+
 #6
     def get_model_trainer_config(self) -> ModelTrainerConfig :        
         config = self.config.model_trainer
@@ -73,9 +93,8 @@ class ConfigurationManager:
         model_trainer_config = ModelTrainerConfig(
             root_dir = config.root_dir,
             final_train_data_path=config.final_train_data_path,
-            test_data_path=config.final_test_data_path,
-            best_model_paramsf=config.best_model_params,
-            final_model_name=config.final_model_name,
+            final_test_data_path=config.final_test_data_path,
+            best_model_params=config.best_model_params,
             STATUS_FILE= config.STATUS_FILE
         )
 
@@ -85,40 +104,16 @@ class ConfigurationManager:
     def get_model_evaluation_config(self) -> ModelEvaluationConfig:
 
         config = self.config.model_evaluation
-        #params = self.params.ElasticNet
-
+        
         create_directories([config.root_dir])
-        create_directories([config.metric_file])
+        
 
         model_evaluation_config = ModelEvaluationConfig(
             root_dir=config.root_dir,
             test_data_path=config.test_data_path,
             model_path=config.model_path,
-          #  all_params=params,
-            metric_file=config.metric_file,
             STATUS_FILE = config.STATUS_FILE
-            #target_column=schema.name,
-           # mlflow_uri="https://dagshub.com/Parthsarthi-lab/Wine-quality-End-to-end-Project.mlflow"
         )
 
         return model_evaluation_config
-    
-
-#8
-    def get_cross_val_config(self) -> CrossValConfig:
-        config = self.config.cross_val
-        create_directories([config.root_dir]),
-        create_directories([config.final_train_data_path, config.final_test_data_path])
-        create_directories([config.best_model_params])
-
-        Cross_val_config = CrossValConfig(
-            root_dir = config.root_dir,
-            data_dir= config.data_dir,
-            final_train_data_path = config.final_train_data_path,
-            final_test_data_path= config.final_test_data_path,
-            STATUS_FILE= config.STATUS_FILE,
-            best_model_params= config.best_model_params
-            )
-
-        return Cross_val_config
     

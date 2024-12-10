@@ -52,27 +52,27 @@ class CrossVal:
             df=pd.read_csv(data_path,index_col=0)
             df.reset_index(drop=True,inplace= True)
 
-            X= df.drop("sales", axis=1)
+            x= df.drop("sales", axis=1)
             y= df["sales"]
 
             info_logger.info("Ingested data loaded")
-            return X,y
+            return x,y
 
         except Exception as e:
             handle_exception(e, CrossValError)
 
-    def split_data_for_final_train(self,X,y):
+    def split_data_for_final_train(self,x,y):
         try:
             info_logger.info("data split for final train started")
 
-            Xtrain,Xtest,ytrain,ytest = train_test_split(X,y, test_size=0.2,random_state=42)
+            xtrain,xtest,ytrain,ytest = train_test_split(x,y, test_size=0.2,random_state=42)
             info_logger.info("data split for final train completed")
-            return Xtrain,Xtest,ytrain,ytest
+            return xtrain,xtest,ytrain,ytest
 
         except Exception as e:
             handle_exception(e, CrossValError) 
 
-    def save_data_for_final_train(self,Xtrain,Xtest,ytrain,ytest):
+    def save_data_for_final_train(self,xtrain,xtest,ytrain,ytest):
         try:
             info_logger.info("saving data for final train started")
 
@@ -82,8 +82,8 @@ class CrossVal:
             #save x train and y train to train.npz
             #save x test and y test to test.npz
 
-            np.savez(os.path.join(final_train_data_path,"Train.npz"),Xtrain=Xtrain,ytrain=ytrain)
-            np.savez(os.path.join(final_test_data_path,"Test.npz"),Xtest=Xtest, ytest=ytest)
+            np.savez(os.path.join(final_train_data_path,"Train.npz"),xtrain=xtrain,ytrain=ytrain)
+            np.savez(os.path.join(final_test_data_path,"Test.npz"),xtest=xtest, ytest=ytest)
             
             
             info_logger.info("data saved for final train completed")
@@ -97,11 +97,11 @@ class CrossVal:
 
 
 
-    def run_cross_val(self,X,y):
+    def run_cross_val(self,x,y):
         try:
             info_logger.info("cross validation started")
 
-            numeric_features = X.columns
+            numeric_features = x.columns
             numeric_transformer = Pipeline(steps=[
                 ('imputer', SimpleImputer(strategy='mean')),  # Missing value imputation
                 ('scaler', StandardScaler())                 # Standardization
@@ -134,7 +134,7 @@ class CrossVal:
             )
 
             # Step 6: Fit GridSearchCV on the training data
-            grid_search.fit(X, y)
+            grid_search.fit(x, y)
 
             best_model = grid_search.best_estimator_
             best_params = grid_search.best_params_
@@ -166,13 +166,13 @@ if __name__ == "__main__":
     cross_val = CrossVal(config = cross_val_config)
     
     #load the features and target
-    X,y = cross_val.load_ingested_data()
+    x,y = cross_val.load_ingested_data()
 
     #split the data into train and test sets for final train
-    Xtrain,Xtest,ytrain,ytest = cross_val.split_data_for_final_train(X,y)
+    xtrain,xtest,ytrain,ytest = cross_val.split_data_for_final_train(x,y)
 
     #save xtrain,xtest,ytrain,ytest to be used in final train
-    cross_val.save_data_for_final_train(Xtrain,Xtest,ytrain,ytest)
+    cross_val.save_data_for_final_train(xtrain,xtest,ytrain,ytest)
 
     #run cross validation
-    cross_val.run_cross_val(Xtrain,ytrain)
+    cross_val.run_cross_val(xtrain,ytrain)

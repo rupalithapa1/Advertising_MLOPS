@@ -30,18 +30,18 @@ class FeatureEngineering:
             final_train_data = np.load(final_train_data_path,allow_pickle=True)
             final_test_data = np.load(final_test_data_path,allow_pickle=True)
 
-            Xtrain = final_train_data["Xtrain"]
-            Xtest = final_test_data["Xtest"]
+            xtrain = final_train_data["xtrain"]
+            xtest = final_test_data["xtest"]
             ytrain = final_train_data["ytrain"]
             ytest = final_test_data["ytest"]
 
             info_logger.info("final training data saved completed")
 
-            return Xtrain,Xtest,ytrain,ytest
+            return xtrain,xtest,ytrain,ytest
         except Exception as e:
             handle_exception(e, FeatureEngineeringError)
 
-    def transform_data(self,Xtrain,Xtest,ytrain,ytest):
+    def transform_data(self,xtrain,xtest,ytrain,ytest):
         try:
             info_logger.info("transforming final training data")
 
@@ -50,7 +50,7 @@ class FeatureEngineering:
                 ('scaler',StandardScaler())     #standardization
             ])
 
-            transform_pipeline.fit(Xtrain)
+            transform_pipeline.fit(xtrain)
 
             #saving the feature_transformer pipeline as artifacts
             #save the pipeline
@@ -59,18 +59,18 @@ class FeatureEngineering:
             joblib.dump(transform_pipeline,pipeline_path)
 
             #transforming xtrain and xtest
-            Xtrain= transform_pipeline.transform(Xtrain)
-            Xtest = transform_pipeline.transform(Xtest)
+            xtrain= transform_pipeline.transform(xtrain)
+            xtest = transform_pipeline.transform(xtest)
 
             info_logger.info("transformed final training data")
 
-            return Xtrain,Xtest,ytrain,ytest
+            return xtrain,xtest,ytrain,ytest
         
         except Exception as e:
             handle_exception (e, FeatureEngineeringError)
 
 
-    def save_transformed_data(self,Xtrain,Xtest,ytrain,ytest):
+    def save_transformed_data(self,xtrain,xtest,ytrain,ytest):
         try:
             info_logger.info("Saving final training transformed data")
 
@@ -78,8 +78,8 @@ class FeatureEngineering:
 
             #save xtrain and ytrain to train.npz
             #save xtest and ytest to test.npz
-            np.savez(os.path.join(final_transform_data_path,'Train.npz'),Xtrain=Xtrain)
-            np.savez(os.path.join(final_transform_data_path,'Test.npz'),Xtest=Xtest)
+            np.savez(os.path.join(final_transform_data_path,'Train.npz'),xtrain=xtrain,ytrain=ytrain)
+            np.savez(os.path.join(final_transform_data_path,'Test.npz'),xtest=xtest,ytest=ytest)
             
             info_logger.info("final training transformed data saved successfully")
 
@@ -96,7 +96,7 @@ if __name__ =="__main__":
     feature_engineering_config = config.get_feature_engineering_config()
 
     feature_engineering = FeatureEngineering(config = feature_engineering_config)
-    Xtrain, Xtest, ytrain, ytest = feature_engineering.load_saved_data()
-    Xtrain, Xtest, ytrain, ytest = feature_engineering.transform_data( Xtrain, Xtest, ytrain, ytest)
-    feature_engineering.save_transformed_data( Xtrain, Xtest, ytrain, ytest)
+    xtrain, xtest, ytrain, ytest = feature_engineering.load_saved_data()
+    xtrain, xtest, ytrain, ytest = feature_engineering.transform_data( xtrain, xtest, ytrain, ytest)
+    feature_engineering.save_transformed_data( xtrain, xtest, ytrain, ytest)
 
