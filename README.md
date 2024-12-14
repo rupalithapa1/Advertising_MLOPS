@@ -55,5 +55,5 @@ Project Highlights:<br>
 🚀 Deployment: Fully operational model with scalable deployment.<br>
 
 Feel free to explore the project and contribute!
-**Repository Link: Advertising_MLOPS
-**
+Repository Link: Advertising_MLOPS
+
